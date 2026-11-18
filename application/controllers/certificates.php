@@ -13,6 +13,11 @@ class Certificates extends MY_Controller
     public function __construct()
     {
         parent::__construct();
+
+        if( ! $this->session->userdata('login_id')){
+            return redirect('home');
+        }
+
         $this->form_validation->set_error_delimiters('<div class="text-danger">', '</div>');
 
     }
