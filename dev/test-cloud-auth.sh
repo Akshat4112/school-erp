@@ -33,4 +33,12 @@ if grep -qiE 'Fatal error|An uncaught Exception|A PHP Error was encountered|A Da
   echo "AUTH FAIL: logged-in dashboard contains a PHP/database error." >&2
   exit 1
 fi
-echo "PASS: certificate endpoint rejects anonymous users; synthetic demo admin login and dashboard work"
+# Confirm Apache never serves project internals through the forwarded browser port.
+for private_path in /dev/cloud-bootstrap.sh /.git/config /application/config/database.php; do
+  private_status="$(curl -sS -o "$response" -w '%{http_code}' "$base$private_path")"
+  if [[ "$private_status" != "403" ]]; then
+    echo "SECURITY FAIL: internal path $private_path returned HTTP $private_status, expected 403." >&2
+    exit 1
+  fi
+done
+echo "PASS: anonymous private endpoints redirect; internal files are blocked; demo admin login and dashboard work"
