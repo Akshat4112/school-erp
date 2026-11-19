@@ -48,6 +48,7 @@ Do not run `down -v` if you need to preserve local data.
 - If your database volume already exists, changing `.env` credentials does not reinitialize MariaDB. Use a fresh local volume.
 - Apache rewrites assume the historical `/SchoolERP/` URL prefix. Browser requests should use that prefix.
 - The GitHub Actions workflow performs PHP lint and a local HTTP smoke test for pull requests.
+- The setup branch also normalizes controller and model filenames to the capitalized case CodeIgniter 3 expects on Linux. This resolves the homepage's previous HTTP 404 on case-sensitive filesystems.
 
 ## First modernization milestones
 
