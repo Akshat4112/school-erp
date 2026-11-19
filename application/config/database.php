@@ -75,10 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
-	'database' => 'school_erp',
+	'hostname' => getenv('SCHOOLERP_DB_HOST') ?: 'localhost',
+	'username' => getenv('SCHOOLERP_DB_USER') ?: 'root',
+	'password' => getenv('SCHOOLERP_DB_PASSWORD') ?: '',
+	'database' => getenv('SCHOOLERP_DB_NAME') ?: 'school_erp',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

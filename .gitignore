@@ -27,3 +27,9 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.stTheme.cache
 *.sublime-workspace
 *.sublime-project
+
+# Never commit local Docker passwords or overrides
+/.env
+/compose.override.yaml
+/dev/schema-only.sql
+/artifacts/

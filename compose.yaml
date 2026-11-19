@@ -1,0 +1,40 @@
+# PRIVATE, disposable compatibility setup for Codespaces and GitHub Actions.
+# NOT approved for public deployment; legacy PHP is unsupported.
+services:
+  web:
+    build:
+      context: .
+      dockerfile: dev/Dockerfile
+    environment:
+      CI_ENV: development
+      SCHOOLERP_BASE_URL: ${SCHOOLERP_BASE_URL:-http://localhost:8080/SchoolERP/}
+      SCHOOLERP_SESSION_PATH: /tmp/schoolerp-sessions
+      SCHOOLERP_DB_HOST: db
+      SCHOOLERP_DB_NAME: school_erp
+      SCHOOLERP_DB_USER: schoolerp
+      SCHOOLERP_DB_PASSWORD: ${SCHOOLERP_DB_PASSWORD:?Use the cloud bootstrap script}
+      SCHOOLERP_DEMO_ADMIN_PASSWORD: ${SCHOOLERP_DEMO_ADMIN_PASSWORD:?Use the cloud bootstrap script}
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - ./:/var/www/html/SchoolERP
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: mariadb:10.11
+    environment:
+      MARIADB_DATABASE: school_erp
+      MARIADB_USER: schoolerp
+      MARIADB_PASSWORD: ${SCHOOLERP_DB_PASSWORD:?Use the cloud bootstrap script}
+      MARIADB_ROOT_PASSWORD: ${SCHOOLERP_DB_ROOT_PASSWORD:?Use the cloud bootstrap script}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./dev/schema-only.sql:/docker-entrypoint-initdb.d/01-schema-only.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+volumes:
+  db_data:

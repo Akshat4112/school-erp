@@ -10,10 +10,13 @@ class MY_Controller extends CI_Controller{
     public function __construct()
     {
         parent::__construct();
-//            if( ! $this->session->userdata('login_id')){
-//                return redirect('home');
-//                exit();
-//            }
+// Explicitly public Home endpoints remain available without a session.
+        // Every other controller is private by default, including Certificates.
+        if (strtolower($this->router->fetch_class()) !== 'home' &&
+            ! $this->session->userdata('login_id')) {
+            redirect('home');
+            exit();
+        }
     }
 
     public function delete_genric($form_validation,$table_name,$view,$field,$unset,$value_form){
