@@ -1,0 +1,29 @@
+name: School ERP local smoke
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure isolated demo credentials
+        run: cp .env.example .env
+      - name: Start local containers
+        run: docker compose up -d --build
+      - name: Check PHP syntax
+        run: docker compose exec -T web sh -c "find application/controllers application/models application/core -name '*.php' -print0 | xargs -0 -n1 php -l"
+        working-directory: .
+      - name: Test the homepage
+        run: bash dev/smoke-test.sh
+      - name: Show logs if tests fail
+        if: failure()
+        run: docker compose logs --no-color --tail=80
+      - name: Stop and remove all demo data
+        if: always()
+        run: docker compose down -v

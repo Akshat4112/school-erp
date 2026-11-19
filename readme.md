@@ -8,6 +8,10 @@ Complete application is created in such a manner that at almost all possible pla
 Application is ready to be integrated with any third party device, viz. Biometric Attendance Machine, Barcode Scanner etc.
 
 
+## Reproducible local development
+
+See [Local development](docs/LOCAL_DEVELOPMENT.md) for a Docker Compose setup, database import and an automated smoke test. This legacy application is **not safe for public deployment**: see [security issue #36](https://github.com/Akshat4112/school-erp/issues/36). Use synthetic data only.
+
 ## Installation 
 * Installing SchoolERP is a very easy process.
 * Download the latest zip from above and extract to your web-root/ subfolder   
