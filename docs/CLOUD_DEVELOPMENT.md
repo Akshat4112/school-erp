@@ -10,7 +10,7 @@ This application is an insecure legacy CodeIgniter project. Do not use genuine s
 4. In the browser Codespaces **Ports** tab, open forwarded port **8080** and append `/SchoolERP/` to the generated URL if it is not already present.
 5. Log in with email `cloud-demo@school.invalid` and the **SCHOOLERP_DEMO_ADMIN_PASSWORD** value in the workspace's `.env`.
 
-GitHub Codespaces forwarded ports are private by default. **Keep port 8080 private**. Never change it to public. The app has other known vulnerabilities and is not secure for public deployment. The browser port may be an HTTPS GitHub-forwarded URL while Apache serves HTTP inside the container.
+GitHub Codespaces forwarded ports are private by default. **Keep port 8080 private**. Never change it to public. The app has other known vulnerabilities and is not secure for public deployment. The cloud startup automatically uses the private Codespaces HTTPS hostname as the ERP base URL, so navigation and login redirects stay in your browser workspace. Apache serves HTTP only inside the container.
 
 ## Continuous checks entirely on GitHub
 
