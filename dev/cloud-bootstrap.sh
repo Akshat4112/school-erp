@@ -14,6 +14,8 @@ if ! grep -q '^SCHOOLERP_DEMO_ADMIN_PASSWORD=' .env; then
   printf 'SCHOOLERP_DEMO_ADMIN_PASSWORD=%s\n' "$(openssl rand -hex 24)" >> .env
 fi
 python3 dev/prepare-schema.py school_erp.sql dev/schema-only.sql
+# DDL contains no historical records or credentials; MariaDB's mysql user must read it.
+chmod 644 dev/schema-only.sql
 docker compose up -d --build
 docker compose exec -T web php dev/seed-demo-admin.php
 bash dev/smoke-test.sh
