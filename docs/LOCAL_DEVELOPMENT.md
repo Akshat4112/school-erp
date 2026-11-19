@@ -41,7 +41,7 @@ Do not run `down -v` if you need to preserve local data.
 
 ## Important limitations
 
-- This is a compatibility environment, not a secure production stack. It uses unsupported PHP 7.4 to help diagnose the original application.
+- This is a compatibility environment, not a secure production stack. It uses unsupported PHP 7.4 to help diagnose the original application. The compatibility image initially installs only the MySQL drivers; Excel/PDF/image workflows may require additional PHP extensions in a later milestone.
 - The repository SQL dump contains legacy sample data and credentials. Do not reuse those credentials and do not expose this dataset.
 - Existing controller-level authentication, plaintext password handling, SQL injection risks, CSRF settings and authorization must be repaired before deploying publicly.
 - Do not assume a successful homepage smoke test validates business workflows, database integrity or security.
