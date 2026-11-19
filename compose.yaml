@@ -7,7 +7,7 @@ services:
       dockerfile: dev/Dockerfile
     environment:
       CI_ENV: development
-      SCHOOLERP_BASE_URL: http://localhost:8080/SchoolERP/
+      SCHOOLERP_BASE_URL: ${SCHOOLERP_BASE_URL:-http://localhost:8080/SchoolERP/}
       SCHOOLERP_SESSION_PATH: /tmp/schoolerp-sessions
       SCHOOLERP_DB_HOST: db
       SCHOOLERP_DB_NAME: school_erp
