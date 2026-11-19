@@ -31,3 +31,5 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 # Never commit local Docker passwords or overrides
 /.env
 /compose.override.yaml
+/dev/schema-only.sql
+/artifacts/

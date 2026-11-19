@@ -10,6 +10,9 @@
 
 ## Start
 
+For the safer synthetic-data setup, run `bash dev/cloud-bootstrap.sh`; see [cloud development](CLOUD_DEVELOPMENT.md). It generates fresh credentials and an empty SQL schema before starting the containers.
+
+
 ```bash
 git clone https://github.com/Akshat4112/school-erp.git
 cd school-erp
@@ -21,7 +24,7 @@ bash dev/smoke-test.sh
 
 Open http://localhost:8080/SchoolERP/ .
 
-The local MariaDB instance starts without a published database port. On its first launch it imports `school_erp.sql` to `school_erp`. The code uses the database credentials and base URL supplied as container environment variables, while retaining the existing non-Docker defaults.
+The local MariaDB instance starts without a published database port. On its first launch it imports the **schema-only** generated `dev/schema-only.sql` to `school_erp`; historical records are deliberately excluded. The code uses the database credentials and base URL supplied as container environment variables, while retaining the existing non-Docker defaults.
 
 ## Inspect and stop
 

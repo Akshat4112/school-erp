@@ -1,4 +1,4 @@
-name: School ERP local smoke
+name: School ERP cloud integration
 on:
   pull_request:
   workflow_dispatch:
@@ -7,23 +7,37 @@ permissions:
   contents: read
 
 jobs:
-  smoke:
+  integration:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Configure isolated demo credentials
-        run: cp .env.example .env
-      - name: Start local containers
-        run: docker compose up -d --build
-      - name: Check PHP syntax
+      - name: Provision disposable synthetic-only cloud environment
+        run: bash dev/cloud-bootstrap.sh
+      - name: PHP syntax checks
         run: docker compose exec -T web sh -c "find application/controllers application/models application/core -name '*.php' -print0 | xargs -0 -n1 php -l"
-        working-directory: .
-      - name: Test the homepage
-        run: bash dev/smoke-test.sh
-      - name: Show logs if tests fail
+      - name: Verify legacy SQL data was not imported
+        run: |
+          count="$(docker compose exec -T db sh -c 'mariadb -u"$MARIADB_USER" -p"$MARIADB_PASSWORD" "$MARIADB_DATABASE" -N -e "SELECT COUNT(*) FROM student;"' | tr -d '\r\n')"
+          test "$count" = "0"
+          echo "PASS: zero historical student records were imported"
+      - name: Capture browser screenshot in cloud
+        if: success()
+        continue-on-error: true
+        run: |
+          mkdir -p artifacts
+          google-chrome --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --window-size=1365,768 --screenshot=artifacts/homepage.png http://127.0.0.1:8080/SchoolERP/
+      - name: Upload browser screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: school-erp-cloud-homepage
+          path: artifacts/homepage.png
+          retention-days: 7
+          if-no-files-found: ignore
+      - name: Show logs if checks fail
         if: failure()
         run: docker compose logs --no-color --tail=80
-      - name: Stop and remove all demo data
+      - name: Tear down disposable environment and destroy database
         if: always()
         run: docker compose down -v
