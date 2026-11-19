@@ -13,6 +13,16 @@ fi
 if ! grep -q '^SCHOOLERP_DEMO_ADMIN_PASSWORD=' .env; then
   printf 'SCHOOLERP_DEMO_ADMIN_PASSWORD=%s\n' "$(openssl rand -hex 24)" >> .env
 fi
+# Codespaces forwards port 8080 to a private HTTPS app.github.dev hostname.
+# Use that hostname for browser links and login redirects instead of localhost.
+if [[ -n "${CODESPACE_NAME:-}" ]]; then
+  cloud_base="https://${CODESPACE_NAME}-8080.app.github.dev/SchoolERP/"
+  if grep -q '^SCHOOLERP_BASE_URL=' .env; then
+    sed -i "s|^SCHOOLERP_BASE_URL=.*|SCHOOLERP_BASE_URL=${cloud_base}|" .env
+  else
+    printf 'SCHOOLERP_BASE_URL=%s\n' "$cloud_base" >> .env
+  fi
+fi
 python3 dev/prepare-schema.py school_erp.sql dev/schema-only.sql
 # DDL contains no historical records or credentials; MariaDB's mysql user must read it.
 chmod 644 dev/schema-only.sql
