@@ -12,7 +12,7 @@ if [[ -z "$password" ]]; then
   exit 1
 fi
 anonymous_status="$(curl -sS -o "$response" -w '%{http_code}' "$base/certificates/dashboard")"
-if [[ "$anonymous_status" != "302" ]]; then
+if [[ "$anonymous_status" != "307" && "$anonymous_status" != "302" ]]; then
   echo "SECURITY FAIL: unauthenticated certificate dashboard returned HTTP $anonymous_status, expected redirect." >&2
   exit 1
 fi
@@ -20,7 +20,7 @@ login_status="$(curl -sS -c "$jar" -b "$jar" -o "$response" -w '%{http_code}' \
   --data-urlencode 'email=cloud-demo@school.invalid' \
   --data-urlencode "password=$password" \
   "$base/home/admin_login")"
-if [[ "$login_status" != "302" ]]; then
+if [[ "$login_status" != "303" && "$login_status" != "302" ]]; then
   echo "AUTH FAIL: demo login returned HTTP $login_status, expected redirect." >&2
   exit 1
 fi
